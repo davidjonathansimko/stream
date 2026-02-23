@@ -1,137 +1,181 @@
 import streamlit as st
 import time
 
-# 1. Konfiguration für Desktop-Optimierung
-st.set_page_config(page_title="HV 2024 - Aktionärsportal", layout="wide", initial_sidebar_state="collapsed")
+# 1. Page Configuration
+st.set_page_config(
+    page_title="Investor Relations | Hauptversammlung 2024",
+    page_icon="🏛️",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
-# 2. Modernes UI/UX Custom CSS
+# 2. Professional Enterprise CSS
 st.markdown("""
     <style>
-    /* Hintergrund und Schrift */
-    .stApp { background-color: #f8f9fa; }
+    /* Global Styles */
+    @import url('https://fonts.googleapis.com');
+    html, body, [class*="st-"] { font-family: 'Inter', sans-serif; }
+    .stApp { background-color: #fcfcfd; }
 
-    /* Header Styling */
-    .nav-bar {
+    /* Header & Navigation */
+    .main-header {
+        background-color: white;
+        padding: 1rem 2rem;
+        border-bottom: 1px solid #edf2f7;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px 20px;
-        background-color: white;
-        border-bottom: 1px solid #e0e0e0;
-        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
 
-    /* Sidebar Boxen Styling */
-    .sidebar-box {
-        background-color: white;
-        border: 1px solid #dcdcdc;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
+    /* Modern Cards (Sidebar-Boxen) */
+    .ui-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        border: 1px solid #f1f3f5;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+        margin-bottom: 1.5rem;
     }
 
-    /* Button Styling */
+    /* Status Badge */
+    .live-badge {
+        background-color: #fee2e2;
+        color: #ef4444;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 12px;
+        display: inline-block;
+        margin-bottom: 8px;
+        border: 1px solid #fecaca;
+    }
+
+    /* Professional Buttons */
     .stButton>button {
-        width: 100%;
-        border-radius: 8px;
-        border: 1px solid #007bff;
-        transition: all 0.3s;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background-color: white;
+        color: #1e293b;
+        font-weight: 500;
+        height: 45px;
+        transition: all 0.2s ease;
     }
     .stButton>button:hover {
-        background-color: #007bff;
-        color: white;
-        transform: translateY(-2px);
+        border-color: #3b82f6;
+        color: #3b82f6;
+        background-color: #eff6ff;
+        transform: translateY(-1px);
+    }
+
+    /* Input Fields */
+    .stTextArea textarea {
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. Interaktive Navigation (State Management)
-if 'page' not in st.session_state:
-    st.session_state.page = "Hauptversammlung"
+# 3. State Management
+if 'active_tab' not in st.session_state:
+    st.session_state.active_tab = "Hauptversammlung"
 
-# Header Simulation
-col_l, col_m, col_r = st.columns([1, 3, 1])
-with col_l:
-    st.markdown("### 🏛️ HV 2024")
-with col_m:
-    # Interaktive Navigations-Buttons
-    nav_cols = st.columns(5)
-    pages = ["Home", "Aktuelles", "Hauptversammlung", "Dokumente", "Meine Daten"]
-    for i, p in enumerate(pages):
-        if nav_cols[i].button(p, key=f"nav_{p}"):
-            st.session_state.page = p
-with col_r:
-    st.markdown("<p style='text-align:right;'>👤 <b>Max Mustermann</b><br><small>Aktionärsnummer: 88231</small></p>",
-                unsafe_allow_html=True)
+# 4. Top Navigation Bar
+with st.container():
+    c1, c2, c3 = st.columns([1.5, 5, 2])
+    with c1:
+        st.markdown("## 🏢 **HV**2024")
+    with c2:
+        # Horizontales Menü
+        tabs = st.columns(5)
+        menu = ["Home", "Aktuelles", "Hauptversammlung", "Dokumente", "Konto"]
+        for i, item in enumerate(menu):
+            if tabs[i].button(item, key=f"btn_{item}", use_container_width=True):
+                st.session_state.active_tab = item
+    with c3:
+        st.markdown(
+            "<div style='text-align: right; padding-top: 10px;'><b>Max Mustermann</b><br><span style='color: #64748b; font-size: 0.8rem;'>Aktionär #4412-9</span></div>",
+            unsafe_allow_html=True)
 
 st.divider()
 
 
-# 4. Modal-Funktion für Dokumente
+# 5. Modal für Dokumentenvorschau
 @st.dialog("Dokumenten-Vorschau")
-def open_document(title):
-    st.write(f"### {title}")
-    st.info("Status: Offizielles Dokument der HV 2024")
+def show_doc(title):
+    st.markdown(f"### {title}")
+    st.caption("Veröffentlichung: 23. Februar 2024 | Version 1.2")
+    st.markdown("---")
     st.markdown("""
-    **Lorem ipsum dolor sit amet**, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
+    **Präambel:**
 
-    *   Punkt 1: Entlastung des Vorstands
-    *   Punkt 2: Gewinnverwendung
-    *   Punkt 3: Wahl des Abschlussprüfers
+    *Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.*
 
-    At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+    **Inhaltliche Schwerpunkte:**
+    1. Analyse der Marktpositionierung im Bereich Cloud-Services.
+    2. Strategische Neuausrichtung der Logistikketten.
+    3. Vorschlag zur Dividendenanpassung für das Fiskaljahr 2023.
+
+    *At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.*
     """)
-    if st.button("Als PDF herunterladen"):
-        st.toast("Download gestartet...")
+    if st.button("Dokument herunterladen (PDF)", type="primary"):
+        st.toast("Download wird vorbereitet...")
         time.sleep(1)
-        st.success("Datei gespeichert!")
+        st.success("Download abgeschlossen.")
 
 
-# 5. Main Content Logic
-if st.session_state.page == "Hauptversammlung":
-    col_left, col_right = st.columns([2.5, 1])
+# 6. Main App Logic
+if st.session_state.active_tab == "Hauptversammlung":
+    left_col, right_col = st.columns([2.2, 1], gap="large")
 
-    with col_left:
-        st.markdown(f"#### 📺 Live-Übertragung")
-        # Professioneller Video-Container
+    with left_col:
+        st.markdown('<span class="live-badge">● LIVE ÜBERTRAGUNG</span>', unsafe_allow_html=True)
+        st.markdown("### Strategische Ausrichtung & Jahresbericht")
+
+        # High-Quality Video Placeholder
         st.video("https://www.youtube.com")
 
-        with st.expander("Details zur Übertragung"):
-            st.write("Sprecher: Dr. h.c. Hans Vorstand (Vorsitzender)")
-            st.write("Thema: Jahresabschlussanalyse Q4/2023")
+        # Speaker Info Card
+        with st.expander("Informationen zum aktuellen Sprecher", expanded=True):
+            st.markdown("""
+            **Referent:** Dr. h.c. Sarah Schmidt-Verley  
+            **Position:** Chief Financial Officer (CFO)  
+            **Thema:** Finanzielle Performance und Nachhaltigkeitsbericht 2023
+            """)
 
-    with col_right:
-        # Interaktive Sidebar-Box 1: Fragen
-        st.markdown('<div class="sidebar-box">', unsafe_allow_html=True)
-        st.markdown("##### 💬 Fragen an den Vorstand")
-        q_text = st.text_area("Ihre Frage...", placeholder="Tippen Sie hier Ihre Frage zur Tagesordnung...", height=100)
-        if st.button("Frage jetzt einreichen"):
-            if q_text:
-                with st.spinner('Übermittlung...'):
-                    time.sleep(1.5)
-                    st.success("Frage eingereicht! (Nr. #412)")
+    with right_col:
+        # Card 1: Fragen
+        st.markdown('<div class="ui-card">', unsafe_allow_html=True)
+        st.markdown("#### 💬 Dialog & Fragen")
+        st.write("Stellen Sie Ihre Frage direkt an das Präsidium.")
+        q = st.text_area("Ihre Anfrage", placeholder="Formulieren Sie hier Ihre Frage...", height=120,
+                         label_visibility="collapsed")
+        if st.button("Frage jetzt einreichen", type="primary", use_container_width=True):
+            if q:
+                with st.spinner("Wird übermittelt..."):
+                    time.sleep(1)
+                    st.success("Übermittelt. Ihre Frage wurde der Warteschlange hinzugefügt.")
             else:
-                st.warning("Bitte geben Sie einen Text ein.")
+                st.error("Bitte Text eingeben.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-        # Interaktive Sidebar-Box 2: Dokumente mit Modal
-        st.markdown('<div class="sidebar-box">', unsafe_allow_html=True)
-        st.markdown("##### 📂 Relevante Unterlagen")
-        st.caption("Klicken für Vorschau")
-
-        if st.button("📄 Tagesordnung.pdf"):
-            open_document("Tagesordnung - HV 2024")
-        if st.button("📄 Geschäftsbericht.pdf"):
-            open_document("Geschäftsbericht 2023")
-        if st.button("📄 Abstimmungsregeln.pdf"):
-            open_document("Leitfaden zur Abstimmung")
+        # Card 2: Dokumente
+        st.markdown('<div class="ui-card">', unsafe_allow_html=True)
+        st.markdown("#### 📂 Begleitunterlagen")
+        st.write("Relevante Dokumente zur aktuellen Sitzung.")
+        if st.button("📋 Tagesordnung & Agenda", use_container_width=True):
+            show_doc("Tagesordnung & Agenda")
+        if st.button("📊 Quartalszahlen Q4 (PDF)", use_container_width=True):
+            show_doc("Quartalszahlen Q4 / 2023")
+        if st.button("⚖️ Satzungsänderung v2", use_container_width=True):
+            show_doc("Vorschlag zur Satzungsänderung")
         st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    # Platzhalter für andere Seiten
-    st.title(f"Bereich: {st.session_state.page}")
-    st.info("Dieser Bereich wird geladen...")
-    if st.button("Zurück zum Live-Stream"):
-        st.session_state.page = "Hauptversammlung"
+    # Andere Seiten Simulation
+    st.container()
+    st.title(f"Portal-Bereich: {st.session_state.active_tab}")
+    st.info("Dieses Modul wird gerade für Ihren Account synchronisiert.")
+    if st.button("← Zurück zur Übertragung"):
+        st.session_state.active_tab = "Hauptversammlung"
         st.rerun()
