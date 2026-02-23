@@ -51,7 +51,7 @@ with col_right:
     # Box: Schnellzugriff Dokumente
     st.markdown('<div class="sidebar-box">', unsafe_allow_html=True)
     st.write("**Schnellzugriff Dokumente**")
-    st.button("📄 Beispiel 001.pdf")
+    st.button("📄 Beispiel 0012.pdf")
     st.button("📄 Beispiel 002.pdf")
     st.button("📄 Beispiel 003.doc")
     st.markdown('</div>', unsafe_allow_html=True)
