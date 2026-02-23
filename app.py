@@ -1,141 +1,110 @@
 import streamlit as st
-import time
 import random
+import time
 
-# 1. Konfiguration für Full-Width & Auto-Stretch
-st.set_page_config(page_title="Investor Relations Portal", layout="wide", initial_sidebar_state="collapsed")
+# 1. Konfiguration für Full-Screen (Auto-Stretch)
+st.set_page_config(page_title="HV 2024 Portal", layout="wide", initial_sidebar_state="collapsed")
 
-# 2. Advanced CSS für ein nahtloses "One-Page" Design
+# 2. "Perfekt-Design" CSS (Kein Scrollen, Corporate Look)
 st.markdown("""
     <style>
-    /* Hintergrund und globale Schrift */
-    @import url('https://fonts.googleapis.com');
-    html, body, [class*="st-"] { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .stApp { background-color: #f4f7f9; }
+    /* Versteckt Standard-Header und Footer */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
 
-    /* Fixiertes Layout ohne Scrollen */
-    .block-container { padding-top: 1rem; padding-bottom: 0rem; height: 100vh; }
+    /* Hintergrund & Font */
+    .stApp { background-color: #F8FAFC; font-family: 'Inter', sans-serif; }
 
-    /* Moderne Karten-Optik */
-    .ui-card {
+    /* One-Page Layout: Verhindert vertikales Scrollen */
+    .block-container { padding: 1rem 2rem; max-height: 100vh; overflow: hidden; }
+
+    /* Card Design */
+    .card {
         background: white;
         padding: 1.5rem;
         border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        border: 1px solid #e1e4e8;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         height: 100%;
     }
 
-    /* Live Badge Pulsierend */
-    .live-indicator {
-        background: #ff4b4b;
-        color: white;
-        padding: 2px 10px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: bold;
-        animation: blink 2s infinite;
+    /* Live Pulsator */
+    .live-dot {
+        height: 10px; width: 10px; background-color: #EF4444;
+        border-radius: 50%; display: inline-block; margin-right: 5px;
+        animation: blinker 1.5s linear infinite;
     }
-    @keyframes blink { 0% {opacity: 1;} 50% {opacity: 0.5;} 100% {opacity: 1;} }
-
-    /* Button Styling */
-    .stButton>button {
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.2s;
-        border: 1px solid #d1d5db;
-    }
-    .stButton>button:hover {
-        border-color: #007bff;
-        color: #007bff;
-        background: #f0f7ff;
-    }
+    @keyframes blinker { 50% { opacity: 0; } }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. Session State für Chat-Verlauf und User
-if 'messages' not in st.session_state:
-    st.session_state.messages = []
-if 'user_name' not in st.session_state:
-    st.session_state.user_name = "Max Mustermann"
+# 3. Session State für Chat & User
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+user_name = "Max Mustermann"  # Dein Account Name
 
-# 4. Header (Top Navigation)
-with st.container():
-    h_col1, h_col2, h_col3 = st.columns([1, 4, 1.5])
-    with h_col1:
-        st.markdown("### 🏛️ IR-PORTAL")
-    with h_col2:
-        st.write("")  # Platzhalter
-    with h_col3:
-        st.markdown(
-            f"<div style='text-align:right;'><b>{st.session_state.user_name}</b><br><small>Aktionär ID: #4412-0</small></div>",
-            unsafe_allow_html=True)
+# 4. Header Bar
+h1, h2 = st.columns([1, 1])
+with h1:
+    st.markdown(f"### 🏛️ **HV**2024 <small>| Hauptversammlung</small>", unsafe_allow_html=True)
+with h2:
+    st.markdown(
+        f"<div style='text-align: right;'><b>{user_name}</b><br><span style='color: #64748B; font-size: 0.8rem;'>Aktionär ID: #4412-0</span></div>",
+        unsafe_allow_html=True)
 
 st.divider()
 
-# 5. Haupt-Dashboard (Zwei Spalten Layout)
-col_stream, col_interact = st.columns([2, 1], gap="medium")
+# 5. Dashboard Spalten (Links: Stream | Rechts: Interaktion)
+# Das Verhältnis [3, 1] sorgt für den "Auto-Stretch" Effekt des Videos
+col_left, col_right = st.columns([3, 1.2], gap="large")
 
-# --- LINKE SPALTE: STREAM ---
-with col_stream:
-    st.markdown('<div class="ui-card">', unsafe_allow_html=True)
-    st.markdown('<span class="live-indicator">LIVE</span> <b>HAUPTVERSAMMLUNG 2024</b>', unsafe_allow_html=True)
-
-    # Video mit Auto-Stretch (Streamlit macht das automatisch)
+with col_left:
+    st.markdown('<div class="live-dot"></div><b>LIVE-ÜBERTRAGUNG</b>', unsafe_allow_html=True)
+    # Video skaliert automatisch auf Spaltenbreite
     st.video("https://www.youtube.com")
 
-    st.markdown("#### Aktueller Tagesordnungspunkt")
-    st.info("**TOP 3:** Bericht des Vorstands über das Geschäftsjahr 2023 und Ausblick 2024.")
-    st.markdown('</div>', unsafe_allow_html=True)
+    # Infobox unter dem Video
+    st.info("**Aktueller Sprecher:** Dr. h.c. Hans Vorstand — *Tagesordnungspunkt 3: Entlastung*")
 
-# --- RECHTE SPALTE: INTERAKTION ---
-with col_interact:
-    # BOX 1: Interaktive Fragen (Mockup-Chat)
-    st.markdown('<div class="ui-card">', unsafe_allow_html=True)
-    st.markdown("#### 💬 Live-Fragen")
+with col_right:
+    # --- FRAGEN SEKTION (CHAT MOCKUP) ---
+    st.markdown("#### 💬 Fragen an den Vorstand")
 
-    # Chat-Verlauf Anzeige
-    chat_container = st.container(height=250)
-    for msg in st.session_state.messages:
-        with chat_container.chat_message(msg["role"]):
-            st.write(f"**{msg['author']}:** {msg['content']}")
+    # Chat-Verlauf mit fester Höhe (verhindert Scrollen der ganzen Seite)
+    chat_box = st.container(height=300)
+    for msg in st.session_state.chat_history:
+        with chat_box.chat_message(msg["role"]):
+            st.write(f"**{msg['user']}:** {msg}")
 
     # Eingabefeld
-    if prompt := st.chat_input("Formulieren Sie hier Ihre Frage..."):
-        # User Nachricht hinzufügen
-        st.session_state.messages.append({"role": "user", "author": st.session_state.user_name, "content": prompt})
+    if prompt := st.chat_input("Ihre Frage..."):
+        # User Frage hinzufügen
+        st.session_state.chat_history.append({"role": "user", "user": user_name, "text": prompt})
 
-        # Automatische Antwort generieren
-        with st.spinner("Vorstand tippt..."):
-            time.sleep(2)
-            responses = [
-                "Vielen Dank für Ihre Frage. Wir werden diese im nächsten Q&A-Block behandeln.",
-                "Eine sehr relevante Frage! Der CFO wird darauf gleich im Detail eingehen.",
-                "Dazu finden Sie detaillierte Informationen auf Seite 42 des Geschäftsberichts.",
-                "Ihre Anfrage wurde an das Protokoll-Team weitergeleitet."
-            ]
-            bot_msg = random.choice(responses)
-            st.session_state.messages.append({"role": "assistant", "author": "System-Bot", "content": bot_msg})
+        # Automatische Antwort generieren (Random Mockup)
+        responses = [
+            "Vielen Dank. Wir nehmen Ihre Frage in die Liste auf.",
+            "Der Vorstand wird diesen Punkt im nächsten Abschnitt erläutern.",
+            "Ihre Frage wurde erfolgreich an das Präsidium übermittelt.",
+            "Dazu finden Sie Details im Geschäftsbericht (S. 14)."
+        ]
+        time.sleep(1)  # Simulation
+        st.session_state.chat_history.append({"role": "assistant", "user": "System", "text": random.choice(responses)})
         st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.write("")  # Spacer
+    st.write("---")
 
-    # BOX 2: Dokumente
-    st.markdown('<div class="ui-card">', unsafe_allow_html=True)
-    st.markdown("#### 📂 Unterlagen")
+    # --- DOKUMENTE SEKTION ---
+    st.markdown("#### 📂 Dokumente")
+    d_col1, d_col2 = st.columns(2)
+    with d_col1:
+        st.button("📄 Agenda", use_container_width=True)
+    with d_col2:
+        st.button("📊 Bericht", use_container_width=True)
+    st.button("⚖️ Abstimmungsregeln (PDF)", use_container_width=True)
 
-    d1, d2 = st.columns(2)
-    if d1.button("📄 Tagesordnung", use_container_width=True):
-        st.toast("Öffne Tagesordnung...")
-    if d2.button("📊 Q4 Bericht", use_container_width=True):
-        st.toast("Öffne Quartalszahlen...")
-
-    if st.button("⚖️ Abstimmungsregeln einsehen", use_container_width=True):
-        st.toast("Lade PDF...")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-# 6. Footer (Mini)
+# 6. Footer (nur Text)
 st.markdown(
-    "<div style='text-align:center; padding-top: 20px; font-size: 10px; color: gray;'>© 2024 Investor Relations Service Plattform - Alle Rechte vorbehalten</div>",
+    "<p style='text-align: center; color: #94A3B8; font-size: 0.7rem; margin-top: 1rem;'>Sichere Verbindung | © 2024 AG Service Portal</p>",
     unsafe_allow_html=True)
